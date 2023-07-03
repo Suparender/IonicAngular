@@ -8,6 +8,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth'
 import { provideFirestore, getFirestore } from '@angular/fire/firestore'
 import { environment as env} from './../environments/environment'
 
+
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
