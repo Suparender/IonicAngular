@@ -59,10 +59,16 @@ const routes: Routes = [
     data: { AuthGuardPipe: toLogin }
   },
   {
+    path: 'policies',
+    title: `${env.appName} - Politicas`,
+    loadChildren: () => import('./pages/policies/policies.module').then( m => m.PoliciesPageModule)
+  },
+  {
     path:'**',
     redirectTo: '404',
     pathMatch: 'full'
-  },
+  }
+
  
 
 
