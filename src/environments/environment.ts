@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   appName: 'IonicAngular',
   appSlogan: 'Devaneios Acumulativos',
+  signInMethod: 'redirect', //redirect || popup
   firebase: {
     apiKey: 'AIzaSyDtamD5SJ4cHXE9ej57xiQwPVirnYbDG9A',
   authDomain: 'ionicangular-55786.firebaseapp.com',

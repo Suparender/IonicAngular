@@ -19,14 +19,14 @@
 
       <!-- botão de logar -->
         <ion-list>
-          <ion-menu-toggle auto-hide="false" >
-            <ion-item routerDirection="root" [routerLink]="'/login'" lines="none" detail="false"
+          <ion-menu-toggle auto-hide="false">
+            <ion-item routerDirection="root" [routerLink]="appUser.url" lines="none" detail="false"
               routerLinkActive="selected">
 
               <ion-icon *ngIf="!appUser.logged" aria-hidden="true" slot="start" [ios]="appUser.icon + '-outline'" [md]="appUser.icon + '-sharp'"></ion-icon>
 
               <ion-avatar *ngIf="appUser.logged" slot="start">
-                <img src="{{ appUser.avatar }}" alt="{{ appUser.title }}" referrerpolicy="no-referrer">
+                <img [alt]="appUser.title" [src]="appUser.avatar" referrerpolicy="no-referrer" />
               </ion-avatar>
 
               <ion-label>{{ appUser.title }}</ion-label>
