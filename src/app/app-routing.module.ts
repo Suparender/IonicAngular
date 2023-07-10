@@ -64,10 +64,17 @@ const routes: Routes = [
     loadChildren: () => import('./pages/policies/policies.module').then( m => m.PoliciesPageModule)
   },
   {
+    path: 'fortrecs',
+    title: `${env.appName} - ForTrunks`,
+    loadChildren: () => import('./pages/fortrecs/fortrecs.module').then( m => m.FortrecsPageModule)
+  },
+  {
     path:'**',
     redirectTo: '404',
     pathMatch: 'full'
   }
+  
+
 
  
 

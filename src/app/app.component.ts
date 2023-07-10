@@ -47,7 +47,8 @@ export class AppComponent implements OnDestroy {
     { title: 'Início', url: '/home', icon: 'home' },
     { title: 'Sobre', url: '/about', icon: 'information-circle' },
     { title: 'Faça contato', url: '/contacts', icon: 'chatbubbles' },
-    { title: 'Politicas de privacidade', url: '/policies', icon: 'document-lock' }
+    { title: 'Politicas de privacidade', url: '/policies', icon: 'document-lock' },
+    { title: 'ForTrunks', url: '/fortrecs', icon: 'rose' }
   ];
 
 
