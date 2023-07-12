@@ -69,10 +69,21 @@ const routes: Routes = [
     loadChildren: () => import('./pages/fortrecs/fortrecs.module').then( m => m.FortrecsPageModule)
   },
   {
+    path: 'fbpopulate',
+    loadChildren: () => import('./fbpopulate/fbpopulate.module').then( m => m.FbpopulatePageModule)
+  },
+  {
+    path: 'view/:id',
+    title: `${env.appName} - Exibição de treco`,
+    loadChildren: () => import('./pages/view/view.module').then( m => m.ViewPageModule)
+  },
+  {
     path:'**',
     redirectTo: '404',
     pathMatch: 'full'
   }
+  
+  
   
 
 

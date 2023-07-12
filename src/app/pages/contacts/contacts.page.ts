@@ -1,5 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Auth, authState, User } from '@angular/fire/auth';
 import { Firestore, addDoc, collection } from '@angular/fire/firestore';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -27,9 +29,34 @@ export class ContactsPage implements OnInit {
   // Se a coleção não existe, será criada.
   contactsCollection = collection(this.firestore, 'contacts');
 
-  constructor() { }
+  constructor(private auth: Auth = inject(Auth)) { }
 
-  ngOnInit() { }
+  // Prepara a autenticação do usuário.
+  authState = authState(this.auth);
+  authStateSubscription = new Subscription;
+
+  ngOnInit() {
+    // Observer que obtém status de usuário logado.
+    this.authStateSubscription = this.authState.subscribe(
+      (userData: User | null) => {
+
+        // Se tem alguém logado.
+        if (userData) {
+
+          // Preenche os campos 'nome' e 'email'.
+          this.form.name = userData.displayName + '';
+          this.form.email = userData.email + '';
+        }
+      }
+    );
+
+  }
+
+  ngOnDestroy() {
+
+    // Remove o observer ao concluir o componente.
+    this.authStateSubscription.unsubscribe();
+  }
 
   sendForm() {
 
