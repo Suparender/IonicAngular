@@ -78,10 +78,22 @@ const routes: Routes = [
     loadChildren: () => import('./pages/view/view.module').then( m => m.ViewPageModule)
   },
   {
+    path: 'gps',
+    loadChildren: () => import('./gps/gps.module').then( m => m.GpsPageModule)
+  },
+  {
+    path: 'camera',
+    loadChildren: () => import('./camera/camera.module').then( m => m.CameraPageModule)
+  },
+
+  {
     path:'**',
     redirectTo: '404',
     pathMatch: 'full'
   }
+  
+
+  
   
   
   
