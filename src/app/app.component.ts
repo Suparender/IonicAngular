@@ -49,7 +49,8 @@ export class AppComponent implements OnDestroy {
     { title: 'Faça contato', url: '/contacts', icon: 'chatbubbles' },
     { title: 'Politicas de privacidade', url: '/policies', icon: 'document-lock' },
     { title: 'ForTrunks', url: '/fortrecs', icon: 'rose' },
-    { title: 'Geolocalização', url: '/gps', icon: 'map' }
+    { title: 'Geolocalização', url: '/gps', icon: 'map' },
+    { title: 'Camera', url: '/camera', icon: 'camera' }
   ];
 
 
