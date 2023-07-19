@@ -66,7 +66,9 @@ const routes: Routes = [
   {
     path: 'fortrecs',
     title: `${env.appName} - ForTrunks`,
-    loadChildren: () => import('./pages/fortrecs/fortrecs.module').then( m => m.FortrecsPageModule)
+    loadChildren: () => import('./pages/fortrecs/fortrecs.module').then( m => m.FortrecsPageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: toLogin }
   },
   {
     path: 'fbpopulate',

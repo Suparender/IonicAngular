@@ -10,7 +10,8 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="!trecs.sended">
 
-    <p>Preencha todos os campos abaixo para registrar um treco em {{ env.appName }}, não nos responsabilizamos por acidentes envolvendo trecos.</p>
+    <p>Preencha todos os campos abaixo para registrar um treco em {{ env.appName }}, não nos responsabilizamos por
+      acidentes envolvendo trecos.</p>
 
     <p>
       <ion-input label="Nome:" type="text" label-placement="floating" fill="outline" placeholder="Seu nome completo"
@@ -19,24 +20,43 @@
 
     <p>
       <ion-input label="Descrição:" type="text" label-placement="floating" fill="outline" placeholder="Seu e-mail"
-         error-text="Descrição inválida!" [(ngModel)]="trecs.description" required minlength="20"></ion-input>
+        error-text="Descrição inválida!" [(ngModel)]="trecs.description" required minlength="20"></ion-input>
     </p>
 
     <p>
-      <ion-input label="Localização:" type="text" label-placement="floating" fill="outline" placeholder="Assunto do contato"
-         error-text="Localização inválida!" [(ngModel)]="trecs.location" required minlength="10"></ion-input>
+      <ion-input label="Localização:" type="text" label-placement="floating" fill="outline"
+        placeholder="Assunto do contato" error-text="Localização inválida!" [(ngModel)]="trecs.location" required
+        minlength="10"></ion-input>
     </p>
 
-    <p>
-      <ion-button type="submit" (click)="sendForm()">Enviar</ion-button>
-    </p>
-
+    <div *ngIf="!photoURL">
+      <ion-fab-button (click)="getPhoto()">
+        <ion-icon name="camera"></ion-icon>
+      </ion-fab-button>
+    </div>
+    <div *ngIf="photoURL" class="ion-text-center">
+      <ion-img [src]="photoURL"></ion-img>
+      <p>
+        <ion-button type="submit" (click)="sendForm()">Enviar</ion-button>
+      </p>
+      <p>
+        <ion-button (click)="refresh()">
+          <ion-icon slot="start" name="camera"></ion-icon>
+          Nova
+        </ion-button>
+      </p>
+    </div>
   </div>
 
   <div *ngIf="trecs.sended">
-    
+
     <h4>{{ trecs.name }} enviado, por favor volte sempre</h4>
     <p>Seu treco foi salvo com sucesso, obrigado por sua atenção :)</p>
     <p><em>Obrigado... porem se percistir um medico devera ser solicitado</em></p>
+  </div>
+
+  <div *ngIf="saved">
+    <p><strong>URL da imagem: </strong></p>
+    <p>{{ savedURL }}</p>
   </div>
 </ion-content>

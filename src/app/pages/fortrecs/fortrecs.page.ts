@@ -20,7 +20,8 @@ export class FortrecsPage implements OnInit {
     location: '',
     date: new Date(),
     status: 'on',
-    sended: false
+    sended: false,
+    savedURLP: ''
   }
 
   private firestore: Firestore = inject(Firestore);
@@ -41,13 +42,12 @@ export class FortrecsPage implements OnInit {
     ) return false;
 
     this.trecs.date = new Date();
-
+    this.savePhoto()
     addDoc(this.contactsCollection, this.trecs)
       .then((data) => {
         console.log('Documento salvo com Id :' + data.id)
         this.trecs.sended = true;
       })
-
     return false;
   }
 
@@ -99,6 +99,7 @@ export class FortrecsPage implements OnInit {
           alert('Imagem salva com sucesso!');
           this.savedURL = response;
           this.saved = true;
+          this.trecs.savedURLP = this.savedURL
         })
     });
   }
