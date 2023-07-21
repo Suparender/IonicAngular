@@ -4,16 +4,13 @@ import { environment } from 'src/environments/environment';
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { Storage, getDownloadURL, ref, uploadString } from '@angular/fire/storage';
 
-
 @Component({
   selector: 'app-fortrecs',
   templateUrl: './fortrecs.page.html',
   styleUrls: ['./fortrecs.page.scss'],
 })
 export class FortrecsPage implements OnInit {
-
-  env = environment
-
+  env = environment;
   public trecs = {
     name: '',
     description: '',
@@ -22,11 +19,9 @@ export class FortrecsPage implements OnInit {
     status: 'on',
     sended: false,
     savedURLP: ''
-  }
+  };
 
   private firestore: Firestore = inject(Firestore);
-
-  
   contactsCollection = collection(this.firestore, 'trecos');
 
   constructor() { }
@@ -34,31 +29,41 @@ export class FortrecsPage implements OnInit {
   ngOnInit() { }
 
   sendForm() {
-
     if (
-      this.trecs.name.length < 3 ||      
+      this.trecs.name.length < 3 ||
       this.trecs.description.length < 20 ||
       this.trecs.location.length < 5
-    ) return false;
+    ) {
+      return false;
+    }
 
     this.trecs.date = new Date();
     this.savePhoto()
-    addDoc(this.contactsCollection, this.trecs)
-      .then((data) => {
-        console.log('Documento salvo com Id :' + data.id)
-        this.trecs.sended = true;
+      .then(() => {
+        addDoc(this.contactsCollection, this.trecs)
+          .then((data) => {
+            console.log('Documento salvo com Id :' + data.id);
+            this.trecs.sended = true;
+            this.resetForm();
+          })
+          .catch((error) => {
+            console.error('Erro ao salvar no Firestore:', error);
+          });
       })
+      .catch((error) => {
+        console.error('Erro ao salvar a foto:', error);
+      });
+
     return false;
   }
 
-  public photoURL: any;
+  public photoURL: string | undefined;
   public photoFormat = '';
   public saved = false;
   public savedURL = '';
 
   private storage: Storage = inject(Storage);
 
-  // Obtém uma foto da API da câmera.
   getPhoto() {
     this.saved = false;
     this.savedURL = '';
@@ -71,7 +76,7 @@ export class FortrecsPage implements OnInit {
       console.log('Foto escolhida: ', x);
       this.photoURL = x.dataUrl;
       this.photoFormat = x.format;
-    })
+    });
   }
 
   // Prepara para nova foto.
@@ -79,32 +84,51 @@ export class FortrecsPage implements OnInit {
     this.photoURL = undefined;
   }
 
-  // Salva a foto atual.
-  savePhoto() {
-    // Cria um nome aleatório para o novo arquivo.
-    let storageRef = ref(this.storage, `${this.getRandomChars(10)}.${this.photoFormat}`);
+  async savePhoto() {
+    if (!this.photoURL) {
+      return Promise.reject(new Error('Nenhuma foto selecionada.'));
+    }
 
-    // Envia o arquivo para o servidor.
-    uploadString(
-      storageRef,
-      // Extrai apenas o 'Base64' do arquivo.
-      this.photoURL.split(',')[1],
-      'base64',
-      { contentType: `image/${this.photoFormat}` }
-    ).then(() => {
-      // Se salvou a imagem.
-      // Obtém o URL da imagem salva.
-      getDownloadURL(ref(storageRef))
-        .then((response) => {
-          alert('Imagem salva com sucesso!');
-          this.savedURL = response;
-          this.saved = true;
-          this.trecs.savedURLP = this.savedURL
-        })
-    });
+    const photoFile = this.dataURLtoBlob(this.photoURL);
+    if (!photoFile) {
+      return Promise.reject(new Error('Erro ao converter a foto.'));
+    }
+
+    try {
+      // Create a random name for the new file.
+      const storageRef = ref(this.storage, `${this.getRandomChars(10)}.${photoFile.type.split('/')[1]}`);
+
+      // Convert the photo data to a base64 string before uploading.
+      const photoBase64 = await this.blobToBase64(photoFile);
+
+      // Upload the base64 string to the server.
+      await uploadString(
+        storageRef,
+        photoBase64,
+        'data_url', // Use 'data_url' as the format
+        { contentType: `image/${photoFile.type.split('/')[1]}` }
+      );
+
+      // Get the URL of the saved image.
+      const response = await getDownloadURL(ref(storageRef));
+      this.savedURL = response;
+      this.saved = true;
+      this.trecs.savedURLP = this.savedURL;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+
+    // Add a default return value in case of success (optional)
+    return null;
   }
 
-  // Gera um nome aleatório.
+  resetForm() {
+    this.trecs.name = '';
+    this.trecs.description = '';
+    this.trecs.location = '';
+    this.photoURL = undefined;
+  }
+
   getRandomChars(n: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let sequence = '';
@@ -115,5 +139,35 @@ export class FortrecsPage implements OnInit {
     return sequence;
   }
 
+  dataURLtoBlob(dataURL: string) {
+    const arr = dataURL.split(',');
+    const mimeMatch = arr[0].match(/:(.*?);/);
 
+    if (mimeMatch && mimeMatch.length >= 2) {
+      const mime = mimeMatch[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+
+      return new Blob([u8arr], { type: mime });
+    }
+
+    return null;
+  }
+
+  // New method to convert Blob to base64 string
+  async blobToBase64(blob: Blob): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
 }
